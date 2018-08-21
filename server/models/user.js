@@ -32,22 +32,31 @@ var UserSchema = new mongoose.Schema({
   },
   phoneNumber : {
     type : String,
-    minlength : 10
+    minlength : 10,
+    trim : true,
+    default : null
   },
   GSTNumber : {
-    type : String
+    type : String,
+    trim : true,
+    default : null
   },
   clients : [{
     clientName : {
       type : String,
-      required : true
+      required : true,
+      trim : true
     },
     clientPhoneNumber : {
       type : String,
-      minlength : 10
+      minlength : 10,
+      trim : true,
+      default : null
     },
     clientGSTNumber : {
-      type : String
+      type : String,
+      trim : true,
+      default : null
     },
   }],
   transactions : [{
@@ -62,13 +71,21 @@ var UserSchema = new mongoose.Schema({
     },
     nature : {
       type : String,
-      required : true
+      required : true,
+      trim : true
     },
     date : {
-      type : String
+      type : String,
+      trim : true,
+      default : null
     } ,
     photoURL : {
-      type : String
+      type : String,
+      default : null
+    } ,
+    remarks : {
+      type : String,
+      default : null
     }
   }],
   tokens : [{
@@ -83,7 +100,7 @@ var UserSchema = new mongoose.Schema({
   }]
 });
 
-var User = mongoose.model('User' , UseSchema);
+var User = mongoose.model('User' , UserSchema);
 
 module.exports = {
   User : User
