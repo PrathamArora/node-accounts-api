@@ -1,4 +1,4 @@
-//require('./config/config.js');
+require('./config/config.js');
 
 const _ = require('lodash');
 const express = require('express');
@@ -94,6 +94,42 @@ app.delete('/users/me/token' , authenticate , (req , res) => {
     res.status(200).send({'message' : 'Logged out successfully'});
   }).catch((e) => {
     res.status(400).send({'error' : 'Unable to process log out request'});
+  });
+});
+
+app.post('/addClient' , authenticate , (req , res) => {
+  var body = _.pick(req.body , ['clientName' , 'clientPhoneNumber' , 'clientGSTNumber' , 'remarks']);
+
+  req.user.clients = req.user.clients.concat([{
+    'clientName' : body.clientName,
+    'clientPhoneNumber' : body.clientPhoneNumber,
+    'clientGSTNumber' : body.clientGSTNumber ,
+    'remarks' : body.remarks
+  }]);
+
+  req.user.save().then(() => {
+    res.send(req.user);
+  }).catch((e) => {
+    res.status(400).send({'error' : 'Unable to add client'});
+  });
+});
+
+app.post('/addTransaction' , authenticate , (req , res) => {
+  var body = _.pick(req.body , ['_clientID' , 'amount' , 'nature' , 'date' , 'photoURL' , 'remarks']);
+
+  req.user.transactions = req.user.transactions.concat([{
+    '_clientID' : body._clientID,
+    'amount' : body.amount,
+    'nature' : body.nature,
+    'date' : body.date,
+    'photoURL' : body.photoURL ,
+    'remarks' : body.remarks
+  }]);
+
+  req.user.save().then(() => {
+    res.send(req.user);
+  }).catch((e) => {
+    res.status(400).send({'error' : 'Unable to add Transaction'});
   });
 });
 
