@@ -28,7 +28,8 @@ app.post('/users' , (req , res) => {
   user.save().then((savedUser) => {
     res.send(savedUser);
   }).catch((e) => {
-    res.status(400).send({'message': 'Unable to add user'});
+    console.log(e);
+    res.status(400).send({'error': 'EmailID already exists'});
   });
 });
 
@@ -43,7 +44,35 @@ app.get('/users' , (req , res)=>{
   });
 });
 
+app.post('/userSignIn' , (req , res) => {
+  var body = _.pick(req.body , ['emailID' , 'password' , 'name', 'clients', 'transactions' , 'phoneNumber' , 'GSTNumber']);
 
+  // var user = new User({
+  //   emailID : body.emailID,
+  //   password : body.password,
+  //   name : body.name,
+  //   clients : body.clients,
+  //   transactions : body.transactions,
+  //   phoneNumber : body.phoneNumber,
+  //   GSTNumber : body.GSTNumber
+  // });
+
+  var user = new User(body);
+
+  user.save().then(() => {
+    if(! user){
+      res.status(404).send({'error' : 'Unable to Sign In'});
+    }
+
+    return user.generateAuthToken();
+  }).then((token) => {
+    res.header('x-auth', token).send(user);
+  }).catch((e) =>{
+    console.log(e);
+    res.status(400).send({'error' : 'Email ID already exists'});
+  });
+
+});
 
 
 
