@@ -89,6 +89,13 @@ app.post('/users/login' , (req , res) => {
   });
 });
 
+app.delete('/users/me/token' , authenticate , (req , res) => {
+  req.user.removeToken(req.token).then(() => {
+    res.status(200).send({'message' : 'Logged out successfully'});
+  }).catch((e) => {
+    res.status(400).send({'error' : 'Unable to process log out request'});
+  });
+});
 
 app.listen(port , () =>{
   console.log(`Started on port ${port}`);
