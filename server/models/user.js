@@ -58,6 +58,10 @@ var UserSchema = new mongoose.Schema({
       trim : true,
       default : null
     },
+    remarks : {
+      type : String,
+      default : null
+    }
   }],
   transactions : [{
     _clientID : {
@@ -104,7 +108,7 @@ UserSchema.methods.toJSON = function() {
     var user = this;
     var userObject = user.toObject();
 
-    return _.pick(userObject , ['_id' , 'emailID' , 'phoneNumber' , 'GSTNumber' , 'name']);
+    return _.pick(userObject , ['_id' , 'emailID' , 'phoneNumber' , 'GSTNumber' , 'name' , 'transactions' , 'clients']);
 };
 
 
@@ -120,6 +124,25 @@ UserSchema.methods.generateAuthToken = function() {
 
   return user.save().then(() => {
     return token;
+  });
+};
+
+UserSchema.statics.findByToken = function(token) {
+  var User = this;
+  var decoded;
+
+  try{
+    decoded = jwt.verify(token , 'abc123');
+  }catch(e){
+    return new Promise((resolve , reject) => {
+      reject({'message' : 'Needs authentication' , 'status' : 401});
+    });
+  }
+
+  return User.findOne({
+    '_id' : decoded._id,
+    'tokens.token' : token ,
+    'tokens.access' : 'auth'
   });
 };
 

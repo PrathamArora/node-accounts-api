@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 const {mongoose} = require('./db/mongoose.js');
 const {ObjectID} = require('mongodb');
 var {User} = require('./models/user.js');
-//var {authenticate} = require('./middleware/authenticate.js');
+var {authenticate} = require('./middleware/authenticate.js');
 
 const port = process.env.PORT || 3000;
 var app = express();
@@ -71,10 +71,11 @@ app.post('/userSignIn' , (req , res) => {
     console.log(e);
     res.status(400).send({'error' : 'Email ID already exists'});
   });
-
 });
 
-
+app.get('/users/me' , authenticate ,(req , res) => {
+  res.send(req.user);
+});
 
 
 
