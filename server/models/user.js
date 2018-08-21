@@ -146,6 +146,26 @@ UserSchema.statics.findByToken = function(token) {
   });
 };
 
+
+UserSchema.statics.findByCredentials = function(emailID , password){
+    var User = this;
+    return User.findOne({emailID : emailID}).then((user) => {
+      if(!user){
+        return Promise.reject({'error' : 'Invalid Email ID and/or password'});
+      }
+
+      return new Promise((resolve , reject) => {
+        bcrypt.compare(password , user.password , (err , res) => {
+          if(!res){
+            reject({'error' : 'Invalid Email ID and/or password'});
+          }
+          resolve(user);
+        });
+      });
+    });
+};
+
+
 UserSchema.pre('save' , function(next) {
   var user = this;
 

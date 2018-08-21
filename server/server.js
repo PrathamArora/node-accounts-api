@@ -77,7 +77,17 @@ app.get('/users/me' , authenticate ,(req , res) => {
   res.send(req.user);
 });
 
+app.post('/users/login' , (req , res) => {
+  var body = _.pick(req.body , ['emailID' , 'password']);
 
+  User.findByCredentials(body.emailID , body.password).then((user) => {
+    return user.generateAuthToken().then((token) => {
+      res.header('x-auth' , token).send(user);
+    });
+  }).catch((e) => {
+    res.status(400).send({'error' : 'Invalid Email ID and/or password'});
+  });
+});
 
 
 app.listen(port , () =>{
