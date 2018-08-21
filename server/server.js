@@ -32,6 +32,17 @@ app.post('/users' , (req , res) => {
   });
 });
 
+app.get('/users' , (req , res)=>{
+  User.find().then((users) => {
+    if(! users){
+      res.status(404).send({'error' : 'No users found'});
+    }
+    res.status(200).send(users);
+  }).catch((e) => {
+    res.status(400).send({'error' : 'Invalid request'});
+  });
+});
+
 
 
 
