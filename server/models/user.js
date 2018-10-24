@@ -41,6 +41,67 @@ var UserSchema = new mongoose.Schema({
     trim : true,
     default : null
   },
+  shopAddress: {
+    type: String,
+    trim: true,
+    default : null
+  },
+  godowns:[{
+    godownAddress: {
+      type : String,
+      trim: true,
+      required: true
+    },
+    godownName: {
+      type : String,
+      trim: true,
+      required: true
+    },
+    godownRent : {
+      type : Number,
+      required : true
+    }
+  }],
+  dealsIn : [{
+    itemType : {
+      type : String,
+      trim : true,
+      required : true
+    }
+  }],
+  plywoodTypes : [{
+    brandName : {
+      type : String,
+      trim : true,
+      required : true
+    },
+    category : {
+      type: String,
+      trim: true,
+      default : null
+    },
+    subCategory : {
+      type: String,
+      trim: true,
+      default : null
+    },
+    thickness : {
+      type : Number,
+      required : true
+    },
+    height : {
+      type : Number,
+      required : true
+    },
+    width : {
+      type : Number,
+      required : true
+    } ,
+    safetyStock : {
+      type : Number,
+      default : 0
+    }
+  }],
   clients : [{
     clientName : {
       type : String,
@@ -108,8 +169,7 @@ UserSchema.methods.toJSON = function() {
     var user = this;
     var userObject = user.toObject();
 
-
-    return _.pick(userObject , ['_id' , 'emailID' , 'phoneNumber' , 'GSTNumber' , 'name' , 'transactions' , 'clients', 'tokens']);
+    return _.pick(userObject , ['_id' , 'emailID' , 'phoneNumber' , 'GSTNumber' , 'name' , 'transactions' , 'clients', 'tokens' , 'godowns', 'shopAddress' , 'dealsIn' , 'plywoodTypes']);
 };
 
 
